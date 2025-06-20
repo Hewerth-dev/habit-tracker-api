@@ -1,0 +1,356 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Habit Tracker API",
+    "description": "API para seguimiento de hábitos personales",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Servidor de desarrollo"
+    }
+  ],
+  "tags": [
+    {
+      "name": "auth",
+      "description": "Operaciones de autenticación"
+    },
+    {
+      "name": "habits",
+      "description": "Operaciones con hábitos"
+    }
+  ],
+  "paths": {
+    "/api/auth/register": {
+      "post": {
+        "tags": ["auth"],
+        "summary": "Registrar un nuevo usuario",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRegister"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuario registrado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos inválidos o usuario ya existe"
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": ["auth"],
+        "summary": "Iniciar sesión",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLogin"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login exitoso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciales inválidas"
+          }
+        }
+      }
+    },
+    "/api/habits": {
+      "get": {
+        "tags": ["habits"],
+        "summary": "Obtener todos los hábitos del usuario",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Lista de hábitos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Habit"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        }
+      },
+      "post": {
+        "tags": ["habits"],
+        "summary": "Crear un nuevo hábito",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HabitInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Hábito creado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Habit"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos inválidos"
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        }
+      }
+    },
+    "/api/habits/{id}": {
+      "get": {
+        "tags": ["habits"],
+        "summary": "Obtener un hábito por ID",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID del hábito"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hábito encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Habit"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Hábito no encontrado"
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        }
+      },
+      "put": {
+        "tags": ["habits"],
+        "summary": "Actualizar un hábito",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID del hábito"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HabitInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Hábito actualizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Habit"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Hábito no encontrado"
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["habits"],
+        "summary": "Eliminar un hábito",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID del hábito"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hábito eliminado"
+          },
+          "404": {
+            "description": "Hábito no encontrado"
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserRegister": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "usuario@ejemplo.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "contraseña123"
+          }
+        }
+      },
+      "UserLogin": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "usuario@ejemplo.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "contraseña123"
+          }
+        }
+      },
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "60d21b4667d0d8992e610c85"
+              },
+              "email": {
+                "type": "string",
+                "example": "usuario@ejemplo.com"
+              }
+            }
+          }
+        }
+      },
+      "HabitInput": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Meditar"
+          },
+          "completed": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      },
+      "Habit": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "60d21b4667d0d8992e610c85"
+          },
+          "name": {
+            "type": "string",
+            "example": "Meditar"
+          },
+          "completed": {
+            "type": "boolean",
+            "example": false
+          },
+          "createdBy": {
+            "type": "string",
+            "example": "60d21b4667d0d8992e610c85"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-06-22T10:30:00Z"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
