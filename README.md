@@ -9,6 +9,7 @@ A RESTful API for tracking personal habits with user authentication and data per
 - User-specific habit management
 - Validation for all inputs
 - API documentation with Swagger
+- Centralized logging with Winston
 
 ## Tech Stack
 
@@ -18,6 +19,7 @@ A RESTful API for tracking personal habits with user authentication and data per
 - **Validation**: express-validator
 - **API Documentation**: Swagger UI
 - **Containerization**: Docker and Docker Compose
+- **Logging**: Winston
 
 ## Project Structure
 
@@ -31,19 +33,21 @@ A RESTful API for tracking personal habits with user authentication and data per
 ├── swagger.json          # API documentation
 ├── config/
 │   └── db.js             # Database connection
-└── src/
-    ├── controllers/      # Request handlers
-    │   ├── authController.js
-    │   └── habitController.js
-    ├── middleware/       # Middleware functions
-    │   ├── auth.js       # JWT authentication
-    │   └── errorHandler.js
-    ├── models/           # Database models
-    │   ├── Habit.js
-    │   └── User.js
-    └── routes/           # API routes
-        ├── authRoutes.js
-        └── habitRoutes.js
+├── src/
+│   ├── controllers/      # Request handlers
+│   │   ├── authController.js
+│   │   └── habitController.js
+│   ├── middleware/       # Middleware functions
+│   │   ├── auth.js       # JWT authentication
+│   │   └── errorHandler.js
+│   ├── models/           # Database models
+│   │   ├── Habit.js
+│   │   └── User.js
+│   ├── routes/           # API routes
+│   │   ├── authRoutes.js
+│   │   └── habitRoutes.js
+│   └── utils/
+│       └── logger.js     # Winston logger configuration
 ```
 
 ## Setup & Installation
@@ -79,6 +83,11 @@ PORT=3000
 MONGO_URI=mongodb://admin:secret@localhost:27017/habit_db?authSource=admin
 JWT_SECRET=habits_secret
 ```
+
+## Logging
+
+This project uses [Winston](https://github.com/winstonjs/winston) for centralized and leveled logging.  
+Logs are output to the console and saved in the `logs/` directory as `error.log` and `combined.log`.
 
 ## API Endpoints
 
