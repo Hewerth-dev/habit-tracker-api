@@ -3,12 +3,14 @@ const connectDB = require("./config/db");
 require("dotenv").config();
 const swaggerUi = require("swagger-ui-express");
 const swaggerDoc = require("./swagger.json");
+const morgan = require("morgan");
 
 const app = express();
 app.use(express.json());
 
-//conectar a la bd
 connectDB();
+
+app.use(morgan("dev"));
 
 //Import routes
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
