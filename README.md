@@ -20,6 +20,7 @@ A RESTful API for tracking personal habits with user authentication and data per
 - **API Documentation**: Swagger UI
 - **Containerization**: Docker and Docker Compose
 - **Logging**: Winston
+- **Testing**: Jest, Supertest
 
 ## Project Structure
 
@@ -48,6 +49,9 @@ A RESTful API for tracking personal habits with user authentication and data per
 │   │   └── habitRoutes.js
 │   └── utils/
 │       └── logger.js     # Winston logger configuration
+├── tests/                # Automated tests (Jest & Supertest)
+│   ├── auth.test.js
+│   └── habits.test.js
 ```
 
 ## Setup & Installation
@@ -88,6 +92,14 @@ JWT_SECRET=habits_secret
 
 This project uses [Winston](https://github.com/winstonjs/winston) for centralized and leveled logging.  
 Logs are output to the console and saved in the `logs/` directory as `error.log` and `combined.log`.
+
+You can use the logger in your code as follows:
+
+```js
+const logger = require("./src/utils/logger");
+logger.info("Informational message");
+logger.error("Error message");
+```
 
 ## API Endpoints
 
@@ -149,4 +161,15 @@ docker-compose down
 
 ## Testing the API
 
-You can use Postman, curl, or any API client to test the endpoints. The Swagger documentation provides interactive testing capabilities as
+Automated tests are implemented using [Jest](https://jestjs.io/) and [Supertest](https://github.com/ladjs/supertest) for endpoints and integration testing.
+
+### Run all tests
+
+```bash
+npm test
+```
+
+- All test files are located in the `tests/` directory.
+- You can add new test files following the pattern `*.test.js`.
+
+You can also use Postman, curl, or any API client to test the endpoints manually. The Swagger documentation provides interactive testing capabilities as well.

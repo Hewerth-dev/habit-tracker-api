@@ -5,8 +5,7 @@ const logger = require("../utils/logger");
 exports.getHabits = async (req, res) => {
   try {
     const habits = await Habit.find({ createdBy: req.user.userId });
-
-    logger.info(`User ${req.user.userId} list their habits`);
+    logger.info(`User ${req.user.userId} listed their habits`);
     res.json(habits);
   } catch (error) {
     logger.error(
